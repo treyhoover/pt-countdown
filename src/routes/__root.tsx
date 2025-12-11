@@ -13,7 +13,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Que horas são?',
+        title: 'Que horas são agora?',
       },
       {
         name: 'description',
@@ -21,7 +21,7 @@ export const Route = createRootRoute({
       },
       {
         property: 'og:title',
-        content: 'Que horas são?',
+        content: 'Que horas são agora?',
       },
       {
         property: 'og:description',
