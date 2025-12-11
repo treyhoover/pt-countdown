@@ -181,8 +181,7 @@ function getTimeInWords(language: Language): string {
 
   // For other minutes
   const minuteWord = numberWords.pt[minute]
-  const minutoText = minute === 1 ? 'minuto' : 'minutos'
-  return `${verb} ${hourWord} e ${minuteWord} ${minutoText} ${period}.`
+  return `${verb} ${hourWord} e ${minuteWord} ${period}.`
 }
 
 function useAnimatedValue(target: number, duration = 1500) {
