@@ -213,7 +213,21 @@ export function getNextSession(): {
 
     const msUntil = classStart.getTime() - lisbonTime.getTime();
     const hoursUntilStart = msUntil / (1000 * 60 * 60);
-    const daysUntil = Math.floor(hoursUntilStart / 24);
+
+    // Calculate days until based on calendar dates, not hours
+    // Compare just the date parts (ignoring time)
+    const todayDate = new Date(
+      lisbonTime.getFullYear(),
+      lisbonTime.getMonth(),
+      lisbonTime.getDate()
+    );
+    const sessionDateOnly = new Date(
+      sessionDate.getFullYear(),
+      sessionDate.getMonth(),
+      sessionDate.getDate()
+    );
+    const msDiff = sessionDateOnly.getTime() - todayDate.getTime();
+    const daysUntil = Math.round(msDiff / (1000 * 60 * 60 * 24));
 
     return {
       date: sessionDate,
