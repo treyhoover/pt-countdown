@@ -1,13 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
+import {
+  getTotalHours,
+  getElapsedHours,
+  getCurrentSession,
+  getNextSession,
+} from '~/data/scheduleUtils'
 
 export const Route = createFileRoute('/')({
   component: Home,
 })
-
-// Configuration - Set your countdown parameters here
-const TOTAL_HOURS = 100
-const ELAPSED_HOURS = 35
 
 function useAnimatedValue(target: number, duration = 1500) {
   const [value, setValue] = useState(0)
@@ -36,47 +38,27 @@ function useAnimatedValue(target: number, duration = 1500) {
   return value
 }
 
-function ProgressRing({ percentage }: { percentage: number }) {
-  const [offset, setOffset] = useState(565.48)
-  const circumference = 2 * Math.PI * 90
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      const newOffset = circumference - (percentage / 100) * circumference
-      setOffset(newOffset)
-    }, 600)
-    return () => clearTimeout(timeout)
-  }, [percentage, circumference])
-
-  return (
-    <svg className="w-48 h-48 glow-pulse" viewBox="0 0 200 200">
-      {/* Background circle */}
-      <circle cx="100" cy="100" r="90" fill="none" stroke="#004d00" strokeWidth="8" />
-      {/* Progress circle */}
-      <circle
-        cx="100"
-        cy="100"
-        r="90"
-        fill="none"
-        stroke="#FFD700"
-        strokeWidth="8"
-        className="progress-ring"
-        strokeDasharray="565.48"
-        strokeDashoffset={offset}
-        transform="rotate(-90 100 100)"
-        strokeLinecap="square"
-      />
-    </svg>
-  )
-}
-
 function Home() {
-  const remaining = TOTAL_HOURS - ELAPSED_HOURS
-  const percentage = (ELAPSED_HOURS / TOTAL_HOURS) * 100
+  const [elapsed, setElapsed] = useState(getElapsedHours())
+  const [currentSessionInfo, setCurrentSessionInfo] = useState(getCurrentSession())
+  const [nextSessionInfo, setNextSessionInfo] = useState(getNextSession())
+  const totalHours = getTotalHours()
 
-  const hoursCompleted = useAnimatedValue(ELAPSED_HOURS)
-  const hoursRemaining = useAnimatedValue(remaining)
-  const percentageValue = useAnimatedValue(Math.round(percentage))
+  // Update elapsed hours every second during class time
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setElapsed(getElapsedHours())
+      setCurrentSessionInfo(getCurrentSession())
+      setNextSessionInfo(getNextSession())
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const remaining = totalHours - elapsed
+  const percentage = (elapsed / totalHours) * 100
+
+  const hoursCompleted = useAnimatedValue(Math.round(elapsed))
+  const hoursRemaining = useAnimatedValue(Math.round(remaining))
 
   const [progressWidth, setProgressWidth] = useState(0)
 
@@ -104,28 +86,47 @@ function Home() {
         <div className="max-w-4xl w-full">
           {/* Header */}
           <div className="text-center mb-12 opacity-0 animate-slide-in">
-            <h1 className="font-display text-8xl md:text-9xl text-white tracking-wider">COUNTDOWN</h1>
+            <h1 className="font-display text-6xl md:text-8xl text-white tracking-wider">PORTUGUÊS</h1>
+            <p className="text-[#FFD700] text-sm tracking-[0.2em] uppercase mt-2">A1 + A2</p>
             <div className="w-32 h-1 bg-[#FFD700] mx-auto mt-4" />
           </div>
 
+          {/* Status indicator */}
+          <div className="text-center mb-8 opacity-0 animate-slide-in delay-1">
+            {currentSessionInfo.isInClass ? (
+              <div className="inline-flex items-center gap-2 bg-[#004d00]/80 px-4 py-2 geometric-border">
+                <span className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
+                <span className="text-white text-sm">EM AULA</span>
+                <span className="text-[#FFD700] text-sm">
+                  {currentSessionInfo.timeRemainingInClass}min restantes
+                </span>
+              </div>
+            ) : nextSessionInfo ? (
+              <div className="inline-flex items-center gap-2 bg-[#cc0000]/80 px-4 py-2 geometric-border">
+                <span className="w-3 h-3 bg-[#FFD700] rounded-full" />
+                <span className="text-white text-sm">PRÓXIMA AULA</span>
+                <span className="text-[#FFD700] text-sm">
+                  {nextSessionInfo.daysUntil === 0
+                    ? `hoje às 09:00`
+                    : nextSessionInfo.daysUntil === 1
+                      ? `amanhã às 09:00`
+                      : `em ${nextSessionInfo.daysUntil} dias`}
+                </span>
+              </div>
+            ) : (
+              <div className="inline-flex items-center gap-2 bg-[#FFD700] px-4 py-2 geometric-border">
+                <span className="text-[#004d00] text-sm font-bold">CURSO CONCLUÍDO!</span>
+              </div>
+            )}
+          </div>
+
           {/* Main stats container */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             {/* Hours Completed */}
-            <div className="geometric-border bg-[#004d00]/90 p-8 text-center opacity-0 animate-slide-in delay-1">
+            <div className="geometric-border bg-[#004d00]/90 p-8 text-center opacity-0 animate-slide-in delay-2">
               <p className="text-[#FFD700] text-sm tracking-[0.3em] uppercase mb-4">Completed</p>
               <p className="font-display text-7xl text-white">{hoursCompleted}</p>
               <p className="text-white/60 text-sm mt-2">HOURS</p>
-            </div>
-
-            {/* Center - Circular Progress */}
-            <div className="flex items-center justify-center opacity-0 animate-slide-in delay-2">
-              <div className="relative">
-                <ProgressRing percentage={percentage} />
-                <div className="absolute inset-0 flex items-center justify-center flex-col">
-                  <p className="font-display text-6xl text-white">{percentageValue}</p>
-                  <p className="text-[#FFD700] text-xl">%</p>
-                </div>
-              </div>
             </div>
 
             {/* Hours Remaining */}
