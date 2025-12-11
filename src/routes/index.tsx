@@ -298,7 +298,7 @@ function Home() {
 
           {/* Time in words */}
           <div className="text-center mb-12 opacity-0 animate-slide-in delay-1">
-            <h1 className="font-display text-4xl md:text-6xl text-white tracking-wide">
+            <h1 className="font-display text-4xl md:text-6xl text-white tracking-wide text-balance">
               {timeInWords}
             </h1>
             <div className="w-32 h-1 bg-[#FFD700] mx-auto mt-6" />
