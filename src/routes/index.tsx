@@ -11,6 +11,70 @@ export const Route = createFileRoute('/')({
   component: Home,
 })
 
+type Language = 'en' | 'pt'
+
+const translations = {
+  en: {
+    completed: 'Completed',
+    remaining: 'Remaining',
+    hours: 'HOURS',
+    start: 'START',
+    end: 'END',
+    complete: 'COMPLETE',
+    inClass: 'IN CLASS',
+    minutesRemaining: 'min remaining',
+    nextClass: 'NEXT CLASS',
+    todayAt: 'today at 09:00',
+    tomorrowAt: 'tomorrow at 09:00',
+    inDays: (days: number) => `in ${days} days`,
+    courseComplete: 'COURSE COMPLETE!',
+  },
+  pt: {
+    completed: 'Concluído',
+    remaining: 'Restante',
+    hours: 'HORAS',
+    start: 'INÍCIO',
+    end: 'FIM',
+    complete: 'COMPLETO',
+    inClass: 'EM AULA',
+    minutesRemaining: 'min restantes',
+    nextClass: 'PRÓXIMA AULA',
+    todayAt: 'hoje às 09:00',
+    tomorrowAt: 'amanhã às 09:00',
+    inDays: (days: number) => `em ${days} dias`,
+    courseComplete: 'CURSO CONCLUÍDO!',
+  },
+}
+
+function LanguageSelector({ language, onChange }: { language: Language; onChange: (lang: Language) => void }) {
+  return (
+    <div className="flex items-center gap-1 bg-black/30 p-1 geometric-border border-2">
+      <button
+        type="button"
+        onClick={() => onChange('en')}
+        className={`px-3 py-1 text-sm font-bold transition-colors ${
+          language === 'en'
+            ? 'bg-[#FFD700] text-[#004d00]'
+            : 'text-white/70 hover:text-white'
+        }`}
+      >
+        EN
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange('pt')}
+        className={`px-3 py-1 text-sm font-bold transition-colors ${
+          language === 'pt'
+            ? 'bg-[#FFD700] text-[#004d00]'
+            : 'text-white/70 hover:text-white'
+        }`}
+      >
+        PT
+      </button>
+    </div>
+  )
+}
+
 function useAnimatedValue(target: number, duration = 1500) {
   const [value, setValue] = useState(0)
 
@@ -39,6 +103,8 @@ function useAnimatedValue(target: number, duration = 1500) {
 }
 
 function Home() {
+  const [language, setLanguage] = useState<Language>('pt')
+  const t = translations[language]
   const [elapsed, setElapsed] = useState(getElapsedHours())
   const [currentSessionInfo, setCurrentSessionInfo] = useState(getCurrentSession())
   const [nextSessionInfo, setNextSessionInfo] = useState(getNextSession())
@@ -81,6 +147,11 @@ function Home() {
       {/* Red diagonal section */}
       <div className="absolute inset-0 bg-[#FF0000] diagonal-split" />
 
+      {/* Language selector - top right */}
+      <div className="absolute top-6 right-6 z-20">
+        <LanguageSelector language={language} onChange={setLanguage} />
+      </div>
+
       {/* Main content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center p-8">
         <div className="max-w-4xl w-full">
@@ -96,26 +167,26 @@ function Home() {
             {currentSessionInfo.isInClass ? (
               <div className="inline-flex items-center gap-2 bg-[#004d00]/80 px-4 py-2 geometric-border">
                 <span className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
-                <span className="text-white text-sm">EM AULA</span>
+                <span className="text-white text-sm">{t.inClass}</span>
                 <span className="text-[#FFD700] text-sm">
-                  {currentSessionInfo.timeRemainingInClass}min restantes
+                  {currentSessionInfo.timeRemainingInClass} {t.minutesRemaining}
                 </span>
               </div>
             ) : nextSessionInfo ? (
               <div className="inline-flex items-center gap-2 bg-[#cc0000]/80 px-4 py-2 geometric-border">
                 <span className="w-3 h-3 bg-[#FFD700] rounded-full" />
-                <span className="text-white text-sm">PRÓXIMA AULA</span>
+                <span className="text-white text-sm">{t.nextClass}</span>
                 <span className="text-[#FFD700] text-sm">
                   {nextSessionInfo.daysUntil === 0
-                    ? `hoje às 09:00`
+                    ? t.todayAt
                     : nextSessionInfo.daysUntil === 1
-                      ? `amanhã às 09:00`
-                      : `em ${nextSessionInfo.daysUntil} dias`}
+                      ? t.tomorrowAt
+                      : t.inDays(nextSessionInfo.daysUntil)}
                 </span>
               </div>
             ) : (
               <div className="inline-flex items-center gap-2 bg-[#FFD700] px-4 py-2 geometric-border">
-                <span className="text-[#004d00] text-sm font-bold">CURSO CONCLUÍDO!</span>
+                <span className="text-[#004d00] text-sm font-bold">{t.courseComplete}</span>
               </div>
             )}
           </div>
@@ -124,16 +195,16 @@ function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             {/* Hours Completed */}
             <div className="geometric-border bg-[#004d00]/90 p-8 text-center opacity-0 animate-slide-in delay-2">
-              <p className="text-[#FFD700] text-sm tracking-[0.3em] uppercase mb-4">Completed</p>
+              <p className="text-[#FFD700] text-sm tracking-[0.3em] uppercase mb-4">{t.completed}</p>
               <p className="font-display text-7xl text-white">{hoursCompleted}</p>
-              <p className="text-white/60 text-sm mt-2">HOURS</p>
+              <p className="text-white/60 text-sm mt-2">{t.hours}</p>
             </div>
 
             {/* Hours Remaining */}
             <div className="geometric-border bg-[#cc0000]/90 p-8 text-center opacity-0 animate-slide-in delay-3">
-              <p className="text-[#FFD700] text-sm tracking-[0.3em] uppercase mb-4">Remaining</p>
+              <p className="text-[#FFD700] text-sm tracking-[0.3em] uppercase mb-4">{t.remaining}</p>
               <p className="font-display text-7xl text-white">{hoursRemaining}</p>
-              <p className="text-white/60 text-sm mt-2">HOURS</p>
+              <p className="text-white/60 text-sm mt-2">{t.hours}</p>
             </div>
           </div>
 
@@ -146,9 +217,9 @@ function Home() {
               />
             </div>
             <div className="flex justify-between mt-4 text-white/80 text-sm font-mono">
-              <span>START</span>
-              <span>{Math.round(progressWidth)}% COMPLETE</span>
-              <span>END</span>
+              <span>{t.start}</span>
+              <span>{Math.round(progressWidth)}% {t.complete}</span>
+              <span>{t.end}</span>
             </div>
           </div>
         </div>
