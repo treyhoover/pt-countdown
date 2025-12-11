@@ -265,7 +265,7 @@ function Home() {
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-8">
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-8 pt-22 sm:pt-0">
         <div className="max-w-4xl w-full">
           {/* Status indicator */}
           <div className="text-center mb-8 opacity-0 animate-slide-in">
