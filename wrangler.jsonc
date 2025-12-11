@@ -1,10 +1,17 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "tanstack-start-app",
+  "name": "quehorassaoagora",
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
   "main": "@tanstack/react-start/server-entry",
-  "vars": {
-    "MY_VAR": "Hello from Cloudflare",
-  },
+  "routes": [
+    {
+      "pattern": "quehorassaoagora.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.quehorassaoagora.com",
+      "custom_domain": true
+    }
+  ]
 }

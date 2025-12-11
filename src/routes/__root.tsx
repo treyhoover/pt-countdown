@@ -33,7 +33,11 @@ export const Route = createRootRoute({
       },
       {
         property: 'og:image',
-        content: '/screenshot.png',
+        content: 'https://quehorassaoagora.com/screenshot.png',
+      },
+      {
+        property: 'og:url',
+        content: 'https://quehorassaoagora.com',
       },
     ],
     links: [
