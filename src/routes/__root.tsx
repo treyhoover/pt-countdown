@@ -13,7 +13,27 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Countdown',
+        title: 'Que horas são?',
+      },
+      {
+        name: 'description',
+        content: 'Aprenda a dizer as horas em português.',
+      },
+      {
+        property: 'og:title',
+        content: 'Que horas são?',
+      },
+      {
+        property: 'og:description',
+        content: 'Aprenda a dizer as horas em português.',
+      },
+      {
+        property: 'og:type',
+        content: 'website',
+      },
+      {
+        property: 'og:image',
+        content: '/screenshot.png',
       },
     ],
     links: [
