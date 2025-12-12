@@ -112,6 +112,9 @@ function Home() {
 
   // Update elapsed hours and time every second
   useEffect(() => {
+    // Update immediately when language changes
+    setTimeInWords(getTimeInWords(language))
+
     const interval = setInterval(() => {
       setElapsed(getElapsedHours())
       setCurrentSessionInfo(getCurrentSession())
