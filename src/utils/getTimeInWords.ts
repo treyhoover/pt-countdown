@@ -113,9 +113,8 @@ export function getTimeInWordsCore(language: Language, time: TimeInput): string 
 
 export function getTimeInWords(language: Language): string {
   const now = new Date()
-  const lisbonTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Lisbon' }))
-  const hour = lisbonTime.getHours()
-  const minute = lisbonTime.getMinutes()
+  const hour = now.getHours()
+  const minute = now.getMinutes()
 
   return getTimeInWordsCore(language, { hour, minute })
 }
