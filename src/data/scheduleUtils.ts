@@ -144,27 +144,10 @@ export function getCurrentSession(): {
   const currentMinutes = currentHour * 60 + currentMinute;
   const timeRemainingInClass = classEndMinutes - currentMinutes;
 
-  // For split sessions, figure out which module we're in
-  const hoursIntoClass =
-    (currentHour - CLASS_START_HOUR) * 60 + currentMinute;
-  let accumulatedMinutes = 0;
-  let currentModule = todaySessions[0].module;
-  let sessionNumber = todaySessions[0].session;
-
-  for (const session of todaySessions) {
-    const sessionMinutes = session.hours * 60;
-    if (hoursIntoClass < accumulatedMinutes + sessionMinutes) {
-      currentModule = session.module;
-      sessionNumber = session.session;
-      break;
-    }
-    accumulatedMinutes += sessionMinutes;
-  }
-
   return {
     isInClass: true,
-    currentModule,
-    sessionNumber,
+    currentModule: null,
+    sessionNumber: todaySessions[0].session,
     timeRemainingInClass,
   };
 }
@@ -172,7 +155,6 @@ export function getCurrentSession(): {
 // Get next session info
 export function getNextSession(): {
   date: Date;
-  module: string;
   sessionNumber: number;
   daysUntil: number;
   hoursUntilStart: number;
@@ -231,7 +213,6 @@ export function getNextSession(): {
 
     return {
       date: sessionDate,
-      module: session.module,
       sessionNumber: session.session,
       daysUntil,
       hoursUntilStart,
@@ -270,6 +251,5 @@ export function getCourseInfo() {
     startDate: schedule.course.startDate,
     endDate: schedule.course.endDate,
     location: schedule.course.location,
-    modules: schedule.modules,
   };
 }

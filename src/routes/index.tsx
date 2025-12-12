@@ -6,7 +6,7 @@ import {
   getCurrentSession,
   getNextSession,
 } from '~/data/scheduleUtils'
-import { getTimeInWords, type Language } from '~/utils/getTimeInWords'
+import { getTimeInWords, getDurationInWords, type Language } from '~/utils/getTimeInWords'
 
 export const Route = createFileRoute('/')({
   component: Home,
@@ -21,7 +21,7 @@ const translations = {
     end: 'END',
     complete: 'COMPLETE',
     inClass: 'IN CLASS',
-    minutesRemaining: 'min remaining',
+    timeRemaining: 'remaining today',
     nextClass: 'NEXT CLASS',
     todayAt: 'today at 09:00',
     tomorrowAt: 'tomorrow at 09:00',
@@ -36,7 +36,7 @@ const translations = {
     end: 'FIM',
     complete: 'COMPLETO',
     inClass: 'EM AULA',
-    minutesRemaining: 'min restantes',
+    timeRemaining: 'restante hoje',
     nextClass: 'PRÓXIMA AULA',
     todayAt: 'hoje às 09:00',
     tomorrowAt: 'amanhã às 09:00',
@@ -163,7 +163,7 @@ function Home() {
                 <span className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
                 <span className="text-white text-sm">{t.inClass}</span>
                 <span className="text-[#FFD700] text-sm">
-                  {currentSessionInfo.timeRemainingInClass} {t.minutesRemaining}
+                  {getDurationInWords(language, currentSessionInfo.timeRemainingInClass!)} {t.timeRemaining}
                 </span>
               </div>
             ) : nextSessionInfo ? (

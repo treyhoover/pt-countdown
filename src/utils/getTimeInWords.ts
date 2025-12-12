@@ -119,3 +119,33 @@ export function getTimeInWords(language: Language): string {
 
   return getTimeInWordsCore(language, { hour, minute })
 }
+
+export function getDurationInWords(language: Language, totalMinutes: number): string {
+  const hours = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
+
+  if (language === 'en') {
+    const hourWord = hours === 1 ? 'hour' : 'hours'
+    const minuteWord = minutes === 1 ? 'minute' : 'minutes'
+
+    if (hours === 0) {
+      return `${minutes} ${minuteWord}`
+    }
+    if (minutes === 0) {
+      return `${hours} ${hourWord}`
+    }
+    return `${hours} ${hourWord} and ${minutes} ${minuteWord}`
+  }
+
+  // Portuguese
+  const hourWord = hours === 1 ? 'hora' : 'horas'
+  const minuteWord = minutes === 1 ? 'minuto' : 'minutos'
+
+  if (hours === 0) {
+    return `${minutes} ${minuteWord}`
+  }
+  if (minutes === 0) {
+    return `${hours} ${hourWord}`
+  }
+  return `${hours} ${hourWord} e ${minutes} ${minuteWord}`
+}
